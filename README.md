@@ -19,7 +19,7 @@ pip install flask
 ```sh
 py .\build_web.py
 ```
-3. Open your web browser and go to `http://localhost:8080`.
+3. Open your web browser and go to `http://localhost:8080`. Users on the same network can also access the web application by navigating to `http://<your_local_IP>:8080`, where `<your_local_IP>` is the IP address of the machine running the application.
 
 ## References: 
 - Flask Documentation: https://www.youtube.com/playlist?list=PLFyAEmibWSQCc60nNQByzmtbMjk3fGyIK
