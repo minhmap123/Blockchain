@@ -1,12 +1,30 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from blockchain import Block, Blockchain, Personal_asset, Transaction
 import json
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from werkzeug.security import generate_password_hash, check_password_hash
+from os import path
 
 blockchain = Blockchain()
 transaction_requests = {}
 
 app = Flask(__name__)
 app.secret_key = "Just_4_r@nd0m_k3y"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    
+    def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
 @app.route('/login_register')
 def login_register():
@@ -16,8 +34,9 @@ def login_register():
 def login():
     username = request.form['username']
     password = request.form['password']
-
-    if username in blockchain.public_ledger and blockchain.public_ledger[username]['password'] == password:
+    user = User.query.filter_by(username=username).first()
+    
+    if user and check_password_hash(user.password, password):
         session["user"] = username
         flash('Login successful!', 'login_success')
         return redirect(url_for('index'))
@@ -30,13 +49,25 @@ def register():
     username = request.form['username']
     email = request.form['email']
     password = request.form['password']
-
-    if username in blockchain.public_ledger:
+    
+    if User.query.filter_by(username=username).first():
         flash('Username already exists. Please choose a different one.', 'register_error')
         return redirect(url_for('login_register'))
-    else:
-        blockchain.public_ledger[username] = {'email': email, 'password': password}
+    
+    if User.query.filter_by(email=email).first():
+        flash('Email already exists. Please choose a different one.', 'register_error')
+        return redirect(url_for('login_register'))
+    
+    new_user = User(username=username, email=email, password=password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
         flash('Registration successful! You can now login.', 'register_success')
+        return redirect(url_for('login_register'))
+    except IntegrityError:
+        db.session.rollback()
+        flash('An error occurred during registration. Please try again.', 'register_error')
         return redirect(url_for('login_register'))
 
 @app.route('/logout')
@@ -149,4 +180,8 @@ def validate_blockchain():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug= True)
+    if not path.exists("users.db"):
+        with app.app_context():
+            db.create_all()
+        print("Created user database")
+    app.run(host="0.0.0.0", port=8080, debug=True)
