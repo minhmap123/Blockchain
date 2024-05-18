@@ -11,7 +11,8 @@ This is a blockchain project developed for the IT003 course. The project involve
 
 ## Requirements: 
 ```sh
-pip install flask
+pip install Flask
+pip install Flask-SQLAlchemy
 ```
 ## Running the Application
 1. Clone the repo and ensure that you are in the project directory.
