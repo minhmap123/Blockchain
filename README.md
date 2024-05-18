@@ -11,7 +11,8 @@ This is a blockchain project developed for the IT003 course. The project involve
 
 ## Requirements: 
 ```sh
-pip install flask
+pip install Flask
+pip install Flask-SQLAlchemy
 ```
 ## Running the Application
 1. Clone the repo and ensure that you are in the project directory.
@@ -24,4 +25,4 @@ py .\build_web.py
 ## References: 
 - Flask Documentation: https://www.youtube.com/playlist?list=PLFyAEmibWSQCc60nNQByzmtbMjk3fGyIK
 - Youtube video on Demo a Blockchain for maintaining Digital Assets: https://www.youtube.com/watch?v=tfnRfDFWHUc
-- Medium Article on Representing an Asset on the Blockchain with Python: https://galea.medium.com/representing-an-asset-on-the-blockchain-with-python-2bd9aff7b500
+- Tutorial on Representing an Asset on the Blockchain with Python: https://galea.medium.com/representing-an-asset-on-the-blockchain-with-python-2bd9aff7b500
