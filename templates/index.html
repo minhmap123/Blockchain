@@ -238,7 +238,7 @@
                 </thead>
                 <tbody>
                     {% set assets = blockchain.public_ledger.get(session["user"], {}) %}
-                    {% for asset_name, count in assets.items() if asset_name != "email" and asset_name != "password" %}
+                    {% for asset_name, count in assets.items() %}
                         <tr>
                             <td>{{ asset_name }}</td>
                             <td>{{ count }}</td>
