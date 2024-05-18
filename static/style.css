@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+}
+.container {
+    margin-top: 50px;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.card.mb-4.shadow {
+    max-width: 400px;
+}
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+}
+.card-title {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-control {
+    border-radius: 5px;
+}
+.btn {
+    border-radius: 5px;
+}
+.error {
+    color: red;
+}
+.success {
+    color: rgb(0, 174, 0);
+}
