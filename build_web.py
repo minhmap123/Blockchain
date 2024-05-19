@@ -4,7 +4,7 @@ import json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
-from os import path
+from os import path, getcwd
 
 blockchain = Blockchain()
 transaction_requests = {}
@@ -25,6 +25,12 @@ class User(db.Model):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password, method='pbkdf2:sha256')
+    
+    @classmethod
+    def populate_ledger(cls, ledger):
+        users = cls.query.all()
+        for user in users:
+            ledger[user.username] = {}
 
 @app.route('/login_register')
 def login_register():
@@ -180,8 +186,12 @@ def validate_blockchain():
 
 
 if __name__ == "__main__":
-    if not path.exists("users.db"):
+    if not path.exists(path.join(getcwd(), "instance", "users.db")):
         with app.app_context():
             db.create_all()
         print("Created user database")
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    else:
+        with app.app_context():
+            User.populate_ledger(blockchain.public_ledger)
+            print("Loaded existing users into the public ledger")
+    app.run(host="0.0.0.0", port=8080)
